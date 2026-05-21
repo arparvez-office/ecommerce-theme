@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Floral Radiance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="cart-app">
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header">
+        <div class="container">
+            <nav class="nav-wrap">
+                <a href="index.html" class="logo">Floral <span>Radiance</span></a>
+                <ul class="nav-links" :class="{ open: mobileNavOpen }">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="blog.html">Journal</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="search-btn" @click="openSearch" aria-label="Search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    </button>
+                    <button class="cart-icon" @click="openDrawer" aria-label="Cart">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121 0 2.067-.852 2.184-1.97l.823-7.41A.75.75 0 0 0 21.32 4.5H5.106M7.5 14.25 5.106 4.5M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+                        <span class="cart-badge" v-if="cartCount > 0">{{ cartCount }}</span>
+                    </button>
+                    <button class="hamburger" @click="toggleMobileNav" aria-label="Menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== SEARCH OVERLAY ===== -->
+    <div class="search-overlay" :class="{ open: searchOpen }" @click.self="closeSearch">
+        <div class="search-inner">
+            <div class="search-bar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input ref="searchInputRef" v-model="searchQuery" type="text" placeholder="Search for flowers, arrangements..." @keydown.esc="closeSearch">
+                <button class="search-close" @click="closeSearch">&times;</button>
+            </div>
+            <div class="search-results">
+                <div v-if="searchLoading" class="search-status">Searching...</div>
+                <div v-else-if="searchQuery.length >= 2 && searchResults.length === 0" class="search-status">No results found for "{{ searchQuery }}"</div>
+                <a v-for="result in searchResults" :key="result.id" :href="'product.html?slug=' + result.slug" class="search-result-item" @click="closeSearch">
+                    <div class="sri-img"><img :src="result.image" :alt="result.name"></div>
+                    <div class="sri-info">
+                        <span class="sri-name">{{ result.name }}</span>
+                        <span class="sri-price">
+                            <template v-if="result.sale_price && parseFloat(result.sale_price) > 0">{{ formatPrice(result.sale_price) }}</template>
+                            <template v-else>{{ formatPrice(result.price) }}</template>
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CART DRAWER ===== -->
+    <div class="drawer-overlay" :class="{ open: drawerOpen }" @click="closeDrawer"></div>
+    <div class="cart-drawer" :class="{ open: drawerOpen }">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-cart" @click="closeDrawer">&times;</button>
+        </div>
+        <div class="cart-body">
+            <div v-if="cart.length === 0" class="cart-empty">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 16px;display:block;color:#ccc"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121 0 2.067-.852 2.184-1.97l.823-7.41A.75.75 0 0 0 21.32 4.5H5.106M7.5 14.25 5.106 4.5M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+                <p>Your cart is empty</p>
+                <a href="shop.html" class="btn btn-primary btn-sm" @click="closeDrawer">Browse Shop</a>
+            </div>
+            <div v-for="item in cart" :key="item.product_id" class="cart-item">
+                <div class="cart-item-img">
+                    <img :src="item.image || 'https://picsum.photos/seed/placeholder/200/200'" :alt="item.name">
+                </div>
+                <div class="cart-item-info">
+                    <h4>{{ item.name }}</h4>
+                    <div class="item-price">{{ formatPrice(item.price) }}</div>
+                    <div class="qty-control">
+                        <button @click="updateQty(item.product_id, item.qty - 1)">&minus;</button>
+                        <span>{{ item.qty }}</span>
+                        <button @click="updateQty(item.product_id, item.qty + 1)">+</button>
+                    </div>
+                    <button class="remove-item" @click="removeItem(item.product_id)">Remove</button>
+                </div>
+            </div>
+        </div>
+        <div class="cart-footer" v-if="cart.length > 0">
+            <div class="cart-total">
+                <span>Total</span>
+                <strong>{{ formattedTotal }}</strong>
+            </div>
+            <button class="btn btn-primary btn-block" @click="goToCheckout">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" :class="{ show: toastVisible }">{{ toastMsg }}</div>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Checkout</h1>
+            <div class="breadcrumb"><a href="index.html">Home</a> &middot; <a href="cart.html">Cart</a> &middot; Checkout</div>
+        </div>
+    </section>
+
+    <!-- ===== CHECKOUT PAGE (JS fills this in) ===== -->
+    <div id="checkout-page" class="container"></div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer" style="margin-top:60px">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="index.html" class="logo">Floral <span style="color:var(--color-accent)">Radiance</span></a>
+                    <p>Bringing nature's finest blooms to your doorstep. Hand-crafted arrangements made with love, delivered fresh.</p>
+                </div>
+                <div>
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="shop.html">All Flowers</a></li>
+                        <li><a href="shop.html?category=1">Fresh Flowers</a></li>
+                        <li><a href="shop.html?category=5">Roses</a></li>
+                        <li><a href="shop.html?category=6">Orchids</a></li>
+                        <li><a href="shop.html?category=3">Gift Sets</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="blog.html">Journal</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Contact</h4>
+                    <p>123 Blossom Lane<br>Garden City, GC 10001</p>
+                    <p style="margin-top:10px"><a href="mailto:hello@floralradiance.com" style="color:#c5c5c5">hello@floralradiance.com</a></p>
+                    <p><a href="tel:+15551234567" style="color:#c5c5c5">+1 (555) 123-4567</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Floral Radiance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/app.js"></script>
+</div><!-- /#cart-app -->
+</body>
+</html>
