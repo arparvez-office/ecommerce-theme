@@ -539,6 +539,13 @@ function initOrderSuccessPage() {
     </div>`;
 }
 
+/* ---- Contact Page ---- */
+function submitContact(e) {
+    e.preventDefault();
+    document.getElementById('contact-msg').innerHTML = '<div class="notice notice-success">Thank you! Your message has been received. We\'ll be in touch shortly.</div>';
+    e.target.reset();
+}
+
 /* ---- Article Page ---- */
 function initArticlePage() {
     const slug = new URLSearchParams(location.search).get('slug');
