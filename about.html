@@ -1,7 +1,7 @@
 <!-- ============================================================
  WP CONVERSION GUIDE
  HTML File:   about.html
- WP Template: page.php (with custom page template)
+ WP Template: page.php (assigned to a WordPress Page)
 
  Split into:
    header.php       ← everything from <!DOCTYPE> to end of floating cart
@@ -112,14 +112,13 @@
 
 <main id="main" class="site-main">
 
-    <!-- WP: the_content() renders page content from WordPress editor -->
+    <!-- WP: page.php — static WordPress page, content editable via Gutenberg or ACF -->
 
     <section class="page-header">
         <div class="container">
             <h1>Our Story</h1>
             <!-- WP: <h1><?php the_title(); ?></h1> -->
             <div class="breadcrumb"><a href="index.html">Home</a> &middot; About</div>
-            <!-- WP: custom breadcrumb or Yoast SEO breadcrumb -->
         </div>
     </section>
 
@@ -127,14 +126,14 @@
         <div class="container">
             <div class="about-grid">
                 <img src="https://picsum.photos/seed/aboutshop/900/1100" alt="Our studio">
+                <!-- WP: use ACF image field or featured image -->
                 <div>
                     <span class="section-eyebrow">Hand-tied since 2014</span>
                     <h2>A small studio with a big love for flowers.</h2>
                     <p>Floral Radiance began as a weekend market stall and quickly grew into a beloved boutique known for elegant, modern arrangements. Every bouquet that leaves our studio is built by hand, by a small team who care deeply about the craft.</p>
-                    <p>We work directly with local growers to bring you the freshest seasonal blooms. Our designs lean toward the natural and the timeless — never fussy, always full of life.</p>
+                    <p>We work directly with local growers to bring you the freshest seasonal blooms. Our designs lean toward the natural and the timeless &mdash; never fussy, always full of life.</p>
                     <p>Whether you're sending flowers to mark a milestone or simply brightening your own home, we're honored to be part of the moment.</p>
                     <a href="shop.html" class="btn btn-primary" style="margin-top:20px">Browse the Shop</a>
-                    <!-- WP: href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" -->
                 </div>
             </div>
         </div>
@@ -221,7 +220,7 @@
 <script src="assets/js/app.js"></script>
 <!-- WP: <?php wp_footer(); ?> -->
 
-<!-- ==================== END footer.php ==================== -->
+<!-- ==================== END footer.php ====================== -->
 
 </div><!-- #page .site -->
 </body>
