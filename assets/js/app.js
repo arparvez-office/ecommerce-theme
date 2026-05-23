@@ -539,10 +539,11 @@ function initOrderSuccessPage() {
     </div>`;
 }
 
-/* ---- Contact Page ---- */
+/* ---- Contact Form ---- */
 function submitContact(e) {
     e.preventDefault();
-    document.getElementById('contact-msg').innerHTML = '<div class="notice notice-success">Thank you! Your message has been received. We\'ll be in touch shortly.</div>';
+    document.getElementById('contact-msg').innerHTML =
+        '<div class="notice notice-success">Thank you! Your message has been received. We\'ll be in touch shortly.</div>';
     e.target.reset();
 }
 

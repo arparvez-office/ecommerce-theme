@@ -1,7 +1,7 @@
 <!-- ============================================================
  WP CONVERSION GUIDE
  HTML File:   contact.html
- WP Template: page.php (with custom page template)
+ WP Template: page.php (assigned to a WordPress Page)
 
  Split into:
    header.php       ← everything from <!DOCTYPE> to end of floating cart
@@ -112,14 +112,14 @@
 
 <main id="main" class="site-main">
 
-    <!-- WP: the_content() renders the contact form from page editor or CF7 / Gravity Forms plugin -->
+    <!-- WP: page.php — static WordPress page -->
+    <!-- WP: Replace form with Contact Form 7 shortcode: [contact-form-7 id="xxx"] -->
+    <!-- WP: Or use WPForms, Gravity Forms, Fluent Forms etc. -->
 
     <section class="page-header">
         <div class="container">
             <h1>Get in Touch</h1>
-            <!-- WP: <h1><?php the_title(); ?></h1> -->
             <div class="breadcrumb"><a href="index.html">Home</a> &middot; Contact</div>
-            <!-- WP: <?php woocommerce_breadcrumb(); ?> or custom breadcrumb -->
         </div>
     </section>
 
@@ -131,13 +131,14 @@
                     <h3>Visit our studio or reach out anytime.</h3>
                     <p>Whether you have a question about an order, a custom request, or you're planning an event, we're here to help.</p>
                     <div style="margin-top:30px">
+                        <!-- WP: pull from theme settings / ACF options page -->
                         <p><strong>Studio</strong> 142 Willow Lane, Floral District</p>
                         <p><strong>Email</strong> hello@floralradiance.co</p>
                         <p><strong>Phone</strong> +1 (555) 234-5678</p>
                         <p><strong>Hours</strong> Mon&ndash;Sat, 9am&ndash;7pm</p>
                     </div>
                 </div>
-                <!-- WP: replace with Contact Form 7 shortcode [contact-form-7 ...] or Gravity Forms [gravityforms id="1"] -->
+                <!-- WP: Replace with [contact-form-7 id="contact-form"] -->
                 <form id="contact-form" onsubmit="submitContact(event)">
                     <div id="contact-msg"></div>
                     <div class="form-group">
@@ -213,7 +214,7 @@
 <script src="assets/js/app.js"></script>
 <!-- WP: <?php wp_footer(); ?> -->
 
-<!-- ==================== END footer.php ==================== -->
+<!-- ==================== END footer.php ====================== -->
 
 </div><!-- #page .site -->
 </body>
